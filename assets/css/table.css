@@ -9,8 +9,8 @@ body {
 }
 
 .modal__container {
-  display: flex;
-  flex-flow: column wrap;
+  /* display: flex; */
+  /* flex-flow: column wrap; */
 
   background-color: #fff;
   width: 70%;
