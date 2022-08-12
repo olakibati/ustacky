@@ -1,5 +1,5 @@
 const GADGETS_CONTAINER = document.getElementById("gadgets_list_container-js");
-const SELECTED_GADGETS_COUNTER = document.querySelector(".gadgets_counter-js");
+const CART_COUNTER = document.querySelector(".gadgets_counter-js");
 
 const AVAILABLE_GADGETS = [
   {
@@ -28,37 +28,54 @@ const AVAILABLE_GADGETS = [
   },
 ];
 
-const SELECTED_GADGETS = [];
-SELECTED_GADGETS_COUNTER.innerHTML = SELECTED_GADGETS.length;
+let CART_ARRAY = [];
+CART_COUNTER.innerHTML = CART_ARRAY.length;
 
 function updateCartCount(numberOfItems) {
-  SELECTED_GADGETS_COUNTER.innerHTML = numberOfItems;
+  CART_COUNTER.innerHTML = numberOfItems;
 }
 
 function addToCart(gadget) {
-  SELECTED_GADGETS.push({ ...gadget, quantity: 1 });
-  console.log(SELECTED_GADGETS);
+  CART_ARRAY.push({ ...gadget, quantity: 1 });
+  // console.log(SELECTED_GADGETS);
 }
 
-function changeBtnContent(btn) {
+function removeFromCart(gadget) {
+  CART_ARRAY = CART_ARRAY.filter((item) => item.name !== gadget.name);
+
+  // console.log(SELECTED_GADGETS);
+}
+
+function changeBtnLabel(btn, action) {
+  if (action === "add") {
+    btn.className = "btn";
+    btn.innerHTML = "add to cart";
+    return;
+  }
   btn.className = "btn btn--remove";
   btn.innerHTML = "remove from cart";
 }
 
-function handleAddToCartProcess(event, id) {
-  const selectedGadget = AVAILABLE_GADGETS[id];
-
-  // SELECTED_GADGETS.map()
-  // let cond = SELECTED_GADGETS.includes(
-  // (item) => item.name === selectedGadget.name
-  // );
-  // console.log(selectedGadget.name);
-  changeBtnContent(event.target);
-  addToCart(selectedGadget);
-  updateCartCount(SELECTED_GADGETS.length);
+function isAlreadySelected(gadget) {
+  return CART_ARRAY.find((elem) => elem.name === gadget.name);
 }
 
-let newArr = AVAILABLE_GADGETS.map((item, index) => {
+function handleAddToCartProcess(event, id) {
+  const selectedGadget = AVAILABLE_GADGETS[id];
+  const feedback = isAlreadySelected(selectedGadget);
+
+  if (feedback) {
+    removeFromCart(feedback);
+    changeBtnLabel(event.target, "add");
+    updateCartCount(CART_ARRAY.length);
+    return;
+  }
+  changeBtnLabel(event.target, "remove");
+  addToCart(selectedGadget);
+  updateCartCount(CART_ARRAY.length);
+}
+
+let gadgetList = AVAILABLE_GADGETS.map((item, index) => {
   return `
   <div class="shop1">
     <img src="./assets/img/product${index + 1}.png">
@@ -71,7 +88,7 @@ let newArr = AVAILABLE_GADGETS.map((item, index) => {
   `;
 }).join("");
 
-GADGETS_CONTAINER.innerHTML = newArr;
+GADGETS_CONTAINER.innerHTML = gadgetList;
 
 // function payWithPaystack() {
 //   let handler = PaystackPop.setup({
