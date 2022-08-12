@@ -3,6 +3,9 @@ const CART_COUNTER = document.getElementById("gadgets_counter-js");
 const INVOICE_CONTAINER = document.getElementById("invoice_tbody-js");
 const MODAL_CONTAINER = document.getElementById("modal__container-js");
 const CART_ICON = document.getElementById("cart-icon-js");
+const INVOICE_AMOUNT = document.getElementById("payable__amount-js");
+const CONTINUE_SHOPPING_BTN = document.getElementById("btn--continue-js");
+const CHECKOUT_BTN = document.getElementById("btn--checkout-js");
 
 const AVAILABLE_GADGETS = [
   {
@@ -57,13 +60,28 @@ function createInvoice(cartArr) {
     .join("");
 }
 
-function renderInvoice(invoice) {
+function renderInvoice({ invoice, totalAmount }) {
   INVOICE_CONTAINER.innerHTML = invoice;
+
+  INVOICE_AMOUNT.innerHTML = totalAmount.toLocaleString("en-US", {
+    style: "currency",
+    currency: "NGN",
+  });
+}
+
+function calculateTotalPrice(cartArr) {
+  const startingPrice = 0;
+  let totalPrice = cartArr.reduce(
+    (accumulatedPrice, item) => accumulatedPrice + item.price,
+    startingPrice
+  );
+  return totalPrice;
 }
 
 function handleInvoiceProcess(cart) {
   const invoice = createInvoice(cart);
-  renderInvoice(invoice);
+  const totalAmount = calculateTotalPrice(cart);
+  renderInvoice({ invoice, totalAmount });
 }
 
 function updateCartCount(numberOfItems) {

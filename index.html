@@ -15,7 +15,6 @@
 <body>
 
     <section class="modal__container hidden" id="modal__container-js">
-
         <table class="invoice__container">
             <thead>
                 <tr>
@@ -28,16 +27,15 @@
             </thead>
             <tbody id="invoice_tbody-js"></tbody>
         </table>
-        <article class="">
-            <h2 class="">total amount to be paid</h2>
-            <span class="">#30000000</span>
+        <article class="payable__container">
+            <h2 class="payable__heading">total amount to be paid</h2>
+            <span class="payable__amount" id="payable__amount-js">N/A</span>
         </article>
-        <article class="">
-            <button class="btn">continue shopping</button>
-            <button class="btn">checkout</button>
+        <article class="navigateTo__container">
+            <button class="btn btn--continue" id="btn--continue-js">continue shopping</button>
+            <button class="btn btn--checkout" id="btn--checkout-js">checkout</button>
         </article>
     </section>
-
 
     <section>
         <div class="header">

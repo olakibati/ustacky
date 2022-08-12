@@ -9,16 +9,25 @@ body {
 }
 
 .modal__container {
+  display: flex;
+  flex-flow: column wrap;
+
   background-color: #fff;
   width: 70%;
-  height: 500px;
+  /* height: 500px; */
 
-  padding: 3rem 1.5rem;
+  padding: 3rem 1.5rem 0;
 
   position: absolute;
   left: 50%;
   top: 200px;
   transform: translate(-50%);
+}
+
+.modal__container > * {
+  /* border: 1px solid #000; */
+  margin-top: 2rem;
+  /* margin-bottom: 2rem; */
 }
 
 .invoice__container {
@@ -77,4 +86,23 @@ td {
 
 .invoice_btn--remove {
   margin: 0;
+}
+
+.payable__container {
+  text-align: center;
+}
+
+.payable__heading {
+  font-size: 1.85rem;
+  font-weight: normal;
+  text-transform: capitalize;
+  margin-bottom: 0.5rem;
+}
+
+.payable__amount {
+  font-size: 3rem;
+}
+
+.navigateTo__container {
+  text-align: right;
 }
