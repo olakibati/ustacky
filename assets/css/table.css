@@ -1,0 +1,76 @@
+body {
+  position: relative;
+
+  counter-reset: Serial;
+}
+
+.modal__container {
+  background-color: #fff;
+  width: 70%;
+  height: 500px;
+
+  padding: 3rem 1.5rem;
+
+  position: absolute;
+  left: 50%;
+  top: 200px;
+  transform: translate(-50%);
+}
+
+.invoice {
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.invoice,
+th,
+td {
+  border: 1px solid black;
+  border-collapse: collapse;
+}
+
+.invoice__heading,
+td {
+  text-align: center;
+  padding: 5px;
+  text-transform: capitalize;
+}
+
+.invoice tbody tr td:first-child::before {
+  counter-increment: Serial;
+  content: counter(Serial);
+}
+
+.invoice tr:nth-child(even) {
+  background-color: #eee;
+}
+
+.invoice tr:nth-child(odd) {
+  background-color: #fff;
+}
+
+.invoice tr:nth-child(even) .btn--counter {
+  background-color: #fff;
+}
+
+.invoice tr:nth-child(odd) .btn--counter {
+}
+
+.option_counter_val {
+  margin: 0 0.5rem;
+}
+
+.btn--counter {
+  width: 30px;
+  height: 30px;
+}
+
+.btn--counter:disabled {
+  border: none;
+  cursor: not-allowed;
+}
+
+.invoice_btn--remove {
+  margin: 0;
+}
