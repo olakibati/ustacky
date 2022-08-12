@@ -4,6 +4,10 @@ body {
   counter-reset: Serial;
 }
 
+.hidden {
+  display: none;
+}
+
 .modal__container {
   background-color: #fff;
   width: 70%;
@@ -17,13 +21,13 @@ body {
   transform: translate(-50%);
 }
 
-.invoice {
+.invoice__container {
   width: 100%;
   max-width: 600px;
   margin: 0 auto;
 }
 
-.invoice,
+.invoice__container,
 th,
 td {
   border: 1px solid black;

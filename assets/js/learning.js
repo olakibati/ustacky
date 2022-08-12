@@ -1,5 +1,8 @@
 const GADGETS_CONTAINER = document.getElementById("gadgets_list_container-js");
-const CART_COUNTER = document.querySelector(".gadgets_counter-js");
+const CART_COUNTER = document.getElementById("gadgets_counter-js");
+const INVOICE_CONTAINER = document.getElementById("invoice_tbody-js");
+const MODAL_CONTAINER = document.getElementById("modal__container-js");
+const CART_ICON = document.getElementById("cart-icon-js");
 
 const AVAILABLE_GADGETS = [
   {
@@ -30,20 +33,50 @@ const AVAILABLE_GADGETS = [
 
 let CART_ARRAY = [];
 CART_COUNTER.innerHTML = CART_ARRAY.length;
+CART_ICON.addEventListener("click", () =>
+  MODAL_CONTAINER.classList.toggle("hidden")
+);
+
+function createInvoice(cartArr) {
+  return cartArr
+    .map((item, index) => {
+      return `
+    <tr>
+      <td></td>
+      <td>${item.name}</td>
+      <td>${item.price}</td>
+      <td>
+          <button class="btn--counter">-</button>
+          <span class="option_counter_val">${item.quantity}</span>
+          <button class="btn--counter">+</button>
+      </td>
+      <td><button class="btn invoice_btn--remove">remove</button></td>
+    </tr>
+    `;
+    })
+    .join("");
+}
+
+function renderInvoice(invoice) {
+  INVOICE_CONTAINER.innerHTML = invoice;
+}
+
+function handleInvoiceProcess(cart) {
+  const invoice = createInvoice(cart);
+  renderInvoice(invoice);
+}
 
 function updateCartCount(numberOfItems) {
   CART_COUNTER.innerHTML = numberOfItems;
+  handleInvoiceProcess(CART_ARRAY);
 }
 
 function addToCart(gadget) {
   CART_ARRAY.push({ ...gadget, quantity: 1 });
-  // console.log(SELECTED_GADGETS);
 }
 
 function removeFromCart(gadget) {
   CART_ARRAY = CART_ARRAY.filter((item) => item.name !== gadget.name);
-
-  // console.log(SELECTED_GADGETS);
 }
 
 function changeBtnLabel(btn, action) {

@@ -9,10 +9,36 @@
     <link rel="stylesheet" href="./assets/css/avalache.css">
     <!-- <script src="https://js.paystack.co/v1/inline.js"></script> -->
     <script defer src="./assets/js/learning.js"></script>
-
+    <link rel="stylesheet" href="./assets/css/table.css">
 </head>
 
 <body>
+
+    <section class="modal__container hidden" id="modal__container-js">
+
+        <table class="invoice__container">
+            <thead>
+                <tr>
+                    <th class="invoice__heading">S/N</th>
+                    <th class="invoice__heading">item</th>
+                    <th class="invoice__heading">price</th>
+                    <th class="invoice__heading">quantity</th>
+                    <th class="invoice__heading"></th>
+                </tr>
+            </thead>
+            <tbody id="invoice_tbody-js"></tbody>
+        </table>
+        <article class="">
+            <h2 class="">total amount to be paid</h2>
+            <span class="">#30000000</span>
+        </article>
+        <article class="">
+            <button class="btn">continue shopping</button>
+            <button class="btn">checkout</button>
+        </article>
+    </section>
+
+
     <section>
         <div class="header">
             <div class="container">
@@ -29,10 +55,8 @@
                     </nav>
                     <div class="square" id="cart-total">
 
-                        <img class="cart" src="./assets/img/orange cart.jpg" width="100px" height="100px"
-                            id="cart-icon">
-
-                        <h3 id="counter"></h3>
+                        <img class="cart" src="./assets/img/orange cart.jpg" width="50" height="50" id="cart-icon-js">
+                        <span id="gadgets_counter-js"></span>
 
                     </div>
 
@@ -97,74 +121,14 @@
 
     <section>
         <!-- shop now -->
-
         <div class="shop" id="shoop">
             <H1>OUR GADGETS</H1>
-            <BR><BR></BR></BR>
-            <div class="row">
-
-                <div class="shop1">
-                    <img src="./assets/img/product1.png" alt="">
-                    <p>SAMSUNG TV</p>
-                    <h3 id="p1">#950,000</h3>
-                    <div>
-                        <a href="" class="btn">ADD TO CART</a>
-                    </div>
-
-                </div>
-                <div class="shop1">
-                    <img src="./assets/img/product2.png">
-                    <p>PIXEL 4a</p>
-                    <h3 id="p2">#350,000</h3>
-                    <div>
-                        <a href="" class="btn">ADD TO CART</a>
-                    </div>
-                </div>
-                <div class="shop1">
-                    <img src="./assets/img/product3 (1).png">
-                    <p>PS5</p>
-                    <h3 id="p3">#450,000</h3>
-                    <div>
-                        <a href="" class="btn">ADD TO CART</a>
-
-                    </div>
-                </div>
+            <br>
+            <br>
+            <br>
+            <div class="row" id="gadgets_list_container-js">
             </div>
-            <br><br>
-            <div class="row">
-                <div class="shop1">
-                    <img src="./assets/img/product4.png">
-                    <p>MACBOOK PRO</p>
-                    <h3 id="p4">#750,000</h3>
-                    <div>
-                        <a href="" class="btn">ADD TO CART</a>
-                    </div>
-
-                </div>
-                <div class="shop1">
-                    <img src="./assets/img/product5.png">
-                    <p>APPLE I WATCH</p>
-                    <h3 id="p5">#350,000</h3>
-                    <div>
-                        <a href="" class="btn">ADD TO CART</a>
-                    </div>
-
-                </div>
-                <div class="shop1">
-                    <img src="./assets/img/product6.png">
-                    <p>EARPOD SERIES</p>
-                    <h3 id="p6">#150,000</h3>
-                    <div>
-                        <a href="" class="btn">ADD TO CART</a>
-                    </div>
-                </div>
-
-
-            </div>
-
-
     </section>
-
 
     <!-- footer -->
     <div class="footer">
@@ -177,10 +141,6 @@
 
         </div>
     </div>
-
-
-
-
 </body>
 
 </html>
