@@ -11,56 +11,78 @@ const AVAILABLE_GADGETS = [
   {
     id: 1,
     name: "Samsung TV",
-    price: 500000,
+    basePrice: 400000,
+    basePrice: 500000,
   },
   {
     id: 2,
     name: "Pixel 4a",
-    price: 250000,
+    basePrice: 250000,
   },
   {
     id: 3,
     name: "PS 5",
-    price: 300000,
+    basePrice: 300000,
   },
   {
     id: 4,
     name: "MacBook Air",
-    price: 800000,
+    basePrice: 800000,
   },
   {
     id: 5,
     name: "Apple Watch",
-    price: 95000,
+    basePrice: 95000,
   },
   {
     id: 6,
     name: "Air Pods",
-    price: 75000,
+    basePrice: 75000,
   },
 ];
 
 let CART_ARRAY = [];
-CART_COUNTER.innerHTML = CART_ARRAY.length;
+updateCartCount();
 CART_ICON.addEventListener("click", () =>
   MODAL_CONTAINER.classList.toggle("hidden")
 );
 
-function handleCounter(id, action) {
+function handleCounter(selectedItemId, action) {
+  const [item] = CART_ARRAY.filter((item) => item.id === selectedItemId);
+  let gadget;
+
   switch (action) {
     case "decrement":
-      console.log("-1");
+      if (item.quantity === 1) {
+        return alert(
+          "You cannot have less than one item. If you wish to remove this item, click remove"
+        );
+      }
+      gadget = {
+        ...item,
+        quantity: item.quantity - 1,
+        totalPrice: item.basePrice * (item.quantity - 1),
+      };
+      updateCart({ gadgetToBeRemoved: item, gadgetToBeAdded: gadget });
       break;
     case "increment":
-      console.log("+1");
+      gadget = {
+        ...item,
+        totalPrice: item.basePrice * (item.quantity + 1),
+        quantity: item.quantity + 1,
+      };
+      updateCart({ gadgetToBeRemoved: item, gadgetToBeAdded: gadget });
       break;
     case "remove":
-      console.log("remove");
+      let response = confirm("Are you sure you want to remove this item?");
+      if (response) removeFromCart(item);
       break;
-
     default:
       return;
   }
+  // handleInvoiceProcess(CART_ARRAY);
+  console.log(CART_ARRAY);
+  //add item again
 }
 
 function createInvoice(cartArr) {
@@ -70,7 +92,7 @@ function createInvoice(cartArr) {
     <tr>
       <td>${index + 1}</td>
       <td>${item.name}</td>
-      <td>${item.price}</td>
+      <td>${item.totalPrice ?? item.basePrice}</td>
       <td>
           <button class="btn--counter" onclick="handleCounter(${
             item.id
@@ -101,7 +123,7 @@ function renderInvoice({ invoice, totalAmount }) {
 function calculateTotalPrice(cartArr) {
   const startingPrice = 0;
   let totalPrice = cartArr.reduce(
-    (accumulatedPrice, item) => accumulatedPrice + item.price,
+    (accumulatedPrice, item) => accumulatedPrice + (item.totalPrice ?? 0),
     startingPrice
   );
   return totalPrice;
@@ -113,17 +135,24 @@ function handleInvoiceProcess(cart) {
   renderInvoice({ invoice, totalAmount });
 }
 
-function updateCartCount(numberOfItems) {
-  CART_COUNTER.innerHTML = numberOfItems;
+function updateCart({ gadgetToBeRemoved, gadgetToBeAdded }) {
+  removeFromCart(gadgetToBeRemoved);
+  addToCart(gadgetToBeAdded);
+}
+
+function updateCartCount() {
+  CART_COUNTER.innerHTML = CART_ARRAY.length;
   handleInvoiceProcess(CART_ARRAY);
 }
 
 function addToCart(gadget) {
-  CART_ARRAY.push({ ...gadget, quantity: 1 });
+  CART_ARRAY.push(gadget);
+  updateCartCount();
 }
 
 function removeFromCart(gadget) {
   CART_ARRAY = CART_ARRAY.filter((item) => item.id !== gadget.id);
+  updateCartCount();
 }
 
 function changeBtnLabel(btn, action) {
@@ -147,12 +176,12 @@ function handleAddToCartProcess(event, index) {
   if (feedback) {
     removeFromCart(feedback);
     changeBtnLabel(event.target, "add");
-    updateCartCount(CART_ARRAY.length);
+    updateCartCount();
     return;
   }
   changeBtnLabel(event.target, "remove");
-  addToCart(selectedGadget);
-  updateCartCount(CART_ARRAY.length);
+  addToCart({ ...selectedGadget, quantity: 1 });
+  updateCartCount();
 }
 
 let gadgetList = AVAILABLE_GADGETS.map((item, index) => {
