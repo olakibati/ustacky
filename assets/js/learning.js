@@ -11,7 +11,6 @@ const AVAILABLE_GADGETS = [
   {
     id: 1,
     name: "Samsung TV",
-    basePrice: 400000,
     basePrice: 500000,
   },
   {
@@ -48,41 +47,51 @@ CART_ICON.addEventListener("click", () =>
 );
 
 function handleCounter(selectedItemId, action) {
-  const [item] = CART_ARRAY.filter((item) => item.id === selectedItemId);
-  let gadget;
-
   switch (action) {
     case "decrement":
-      if (item.quantity === 1) {
-        return alert(
-          "You cannot have less than one item. If you wish to remove this item, click remove"
-        );
-      }
-      gadget = {
-        ...item,
-        quantity: item.quantity - 1,
-        totalPrice: item.basePrice * (item.quantity - 1),
-      };
-      updateCart({ gadgetToBeRemoved: item, gadgetToBeAdded: gadget });
+      CART_ARRAY = CART_ARRAY.map((item, index) => {
+        if (item.id === selectedItemId && item.quantity === 1) {
+          alert(
+            "You cannot have less than one item. If you wish to remove this item, click remove"
+          );
+          return item;
+        }
+
+        if (item.id === selectedItemId) {
+          return {
+            ...item,
+            quantity: item.quantity - 1,
+            totalPrice: item.basePrice * (item.quantity - 1),
+          };
+        }
+
+        return item;
+      });
       break;
     case "increment":
-      gadget = {
-        ...item,
-        totalPrice: item.basePrice * (item.quantity + 1),
-        quantity: item.quantity + 1,
-      };
-      updateCart({ gadgetToBeRemoved: item, gadgetToBeAdded: gadget });
+      CART_ARRAY = CART_ARRAY.map((item, index) => {
+        if (item.id === selectedItemId) {
+          return {
+            ...item,
+            totalPrice: item.basePrice * (item.quantity + 1),
+            quantity: item.quantity + 1,
+          };
+        }
+        return item;
+      });
       break;
     case "remove":
-      let response = confirm("Are you sure you want to remove this item?");
-      if (response) removeFromCart(item);
+      const response = confirm("Are you sure you want to remove this item?");
+      const [gadgetToBeRemoved] = CART_ARRAY.filter(
+        (item) => item.id === selectedItemId
+      );
+      if (response) removeFromCart(gadgetToBeRemoved);
       break;
     default:
+      alert("invalid action");
       return;
   }
-  // handleInvoiceProcess(CART_ARRAY);
-  console.log(CART_ARRAY);
-  //add item again
+  handleInvoiceProcess(CART_ARRAY);
 }
 
 function createInvoice(cartArr) {
