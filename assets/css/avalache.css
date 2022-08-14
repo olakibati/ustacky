@@ -97,6 +97,12 @@ a {
   background: #563434;
 }
 
+.btn:disabled,
+.btn:disabled:hover {
+  background-color: #999;
+  cursor: not-allowed;
+}
+
 .header {
   background-color: #ffcd9e;
 }
