@@ -7,14 +7,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>E-MILLENIAL STORE</title>
     <link rel="stylesheet" href="./assets/css/avalache.css">
-    <!-- <script src="https://js.paystack.co/v1/inline.js"></script> -->
-    <script defer src="./assets/js/learning.js"></script>
     <link rel="stylesheet" href="./assets/css/table.css">
+    <link rel="stylesheet" href="./assets/css/form.css">
+    <script defer src="https://js.paystack.co/v1/inline.js"></script>
+    <script defer src="./assets/js/learning.js"></script>
 </head>
 
 <body>
-
     <section class="modal__container hidden" id="modal__container-js">
+        <!-- <section class="modal__container" id="modal__container-js"> -->
         <table class="invoice__container">
             <thead>
                 <tr>
@@ -31,10 +32,42 @@
             <h2 class="payable__heading">total amount to be paid</h2>
             <span class="payable__amount" id="payable__amount-js">N/A</span>
         </article>
-        <article class="navigateTo__container">
-            <button class="btn btn--continue" id="btn--continue-js">continue shopping</button>
-            <button class="btn btn--checkout" id="btn--checkout-js">checkout</button>
-        </article>
+        <form class="form__container" id="form__container-js">
+            <label for="" class="label--normal">
+                <input type="text" name="name" id="input--name--js" placeholder="Your name" class="input--normal"
+                    required>
+                <span class="error-mssg hidden" id="error-name-js">empty</span>
+            </label>
+            <label for="" class="label--normal">
+                <input type="email" name="mailAddress" id="input--email--js" placeholder="email address"
+                    class="input--normal" required>
+                <span class="error-mssg hidden" id="error-email-js">empty</span>
+            </label>
+            <label for="" class="label--normal">
+                <input type="tel" name="tel" id="input--tel--js" placeholder="Your telephone number"
+                    class="input--normal" required>
+                <span class="error-mssg hidden" id="error-tel-js">empty</span>
+            </label>
+
+
+            <!-- <label for="" class="label--error">
+                <input type="tel" name="tel" id="input--tel--js" placeholder="Your telephone number"
+                    class="input--error" required>
+                <span class="error-box hidden" id="error-tel-js">empty</span>
+            </label> -->
+            <!-- <article class="navigateTo__container"> -->
+            <!-- <button name="con" > -->
+            <span class="btn btn--continue" id="btn--continue-js">
+
+                continue shopping
+            </span>
+            <!-- </button> -->
+            <button type="submit" class="btn btn--checkout" id="btn--checkout-js" disabled>
+                checkout
+            </button>
+            <!-- </article> -->
+        </form>
+
     </section>
 
     <section>

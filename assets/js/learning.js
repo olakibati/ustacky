@@ -1,5 +1,5 @@
 const GADGETS_CONTAINER = document.getElementById("gadgets_list_container-js");
-const CART_COUNTER = document.getElementById("gadgets_counter-js");
+const CART_ITEMS_COUNTER = document.getElementById("gadgets_counter-js");
 const INVOICE_CONTAINER = document.getElementById("invoice_tbody-js");
 const MODAL_CONTAINER = document.getElementById("modal__container-js");
 const CART_ICON = document.getElementById("cart-icon-js");
@@ -11,66 +11,234 @@ const AVAILABLE_GADGETS = [
   {
     id: 1,
     name: "Samsung TV",
-    price: 500000,
+    basePrice: 500000,
   },
   {
     id: 2,
     name: "Pixel 4a",
-    price: 250000,
+    basePrice: 250000,
   },
   {
     id: 3,
     name: "PS 5",
-    price: 300000,
+    basePrice: 300000,
   },
   {
     id: 4,
     name: "MacBook Air",
-    price: 800000,
+    basePrice: 800000,
   },
   {
     id: 5,
     name: "Apple Watch",
-    price: 95000,
+    basePrice: 95000,
   },
   {
     id: 6,
     name: "Air Pods",
-    price: 75000,
+    basePrice: 75000,
   },
 ];
 
 let CART_ARRAY = [];
-CART_COUNTER.innerHTML = CART_ARRAY.length;
-CART_ICON.addEventListener("click", () =>
+updateCartCount();
+CART_ICON.addEventListener("click", () => {
+  MODAL_CONTAINER.classList.toggle("hidden");
+  formValidationProcess.addListeners();
+});
+CONTINUE_SHOPPING_BTN.addEventListener("click", () =>
   MODAL_CONTAINER.classList.toggle("hidden")
 );
+CHECKOUT_BTN.addEventListener("click", (e) => {
+  e.preventDefault();
+  console.log("clicked");
+  // getFormValues();
+  payWithPaystack();
+});
 
-function handleCounter(id, action) {
+const formValidationProcess = {
+  form: document.getElementById("form__container-js"),
+
+  formElements: {
+    input: {
+      name: document.getElementById("input--name--js"),
+      mailAddress: document.getElementById("input--email--js"),
+      tel: document.getElementById("input--tel--js"),
+    },
+
+    error: {
+      name: document.getElementById("error-name-js"),
+      mailAddress: document.getElementById("error-email-js"),
+      tel: document.getElementById("error-tel-js"),
+    },
+
+    submitBtn: document.getElementById("btn--checkout-js"),
+  },
+
+  validStatus: {
+    name: false,
+    mailAddress: false,
+    tel: false,
+  },
+
+  setStatus: function (elem, status) {
+    this.validStatus[elem] = status;
+    // console.log(this.validStatus);
+    // console.log(`${elem} is ${status}`);
+  },
+
+  btnStatus: function () {
+    // console.log(inputElem);
+    const response = Object.values(this.validStatus).includes(false);
+    // console.log(this.formElements.submitBtn);
+    this.formElements.submitBtn.disabled = response;
+    // response ? console.log("btn disabled") : console.log("btn enabled");
+  },
+
+  addError: function (inputBox, errElem, errMssg) {
+    this.setStatus(inputBox.name, false);
+    errElem.textContent = errMssg;
+    errElem.classList.remove("hidden");
+    inputBox.classList.add("input--error");
+    inputBox.parentElement.classList.add("label--error");
+
+    // console.log(inputBox);
+  },
+
+  removeError: function (inputBox, errElem) {
+    this.setStatus(inputBox.name, true);
+    inputBox.classList.remove("input--error");
+    inputBox.parentElement.classList.remove("label--error");
+    errElem.classList.add("hidden");
+  },
+
+  addListeners: function () {
+    let input = this.formElements.input;
+
+    for (const [inputName, inputElem] of Object.entries(input)) {
+      inputElem.addEventListener("keyup", (e) => {
+        this.checkInput(
+          e.target,
+          inputName,
+          this.formElements.error[inputName]
+        );
+
+        this.btnStatus();
+      });
+    }
+  },
+
+  checkEmail: function (param) {
+    return /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(
+      param
+    );
+  },
+
+  checkTelephone: function (param) {
+    return /1?[\s-]?\(?(\d{3})\)?[\s-]?\d{3}[\s-]?\d{4}/.test(param);
+  },
+
+  checkInput: function (inputBox, inputName, inputError) {
+    const inputVal = inputBox.value.trim();
+
+    if (!inputVal) {
+      this.addError(inputBox, inputError, "Field cannot be empty");
+      return;
+    }
+
+    switch (inputName) {
+      case "mailAddress":
+        if (!this.checkEmail(inputVal)) {
+          this.addError(inputBox, inputError, "Provide a valid email address");
+          return;
+        }
+        this.removeError(inputBox, inputError);
+        break;
+
+      case "tel":
+        if (!this.checkTelephone(inputVal)) {
+          this.addError(inputBox, inputError, "Invalid telephone");
+          return;
+        }
+        this.removeError(inputBox, inputError);
+        break;
+
+      default:
+        if (inputVal.length < 2) {
+          this.addError(
+            inputBox,
+            inputError,
+            "Value cannot be lower than two characters"
+          );
+          return;
+        }
+
+        this.removeError(inputBox, inputError);
+        break;
+    }
+  },
+};
+
+function handleCounter(selectedItemId, action) {
   switch (action) {
     case "decrement":
-      console.log("-1");
+      CART_ARRAY = CART_ARRAY.map((item, index) => {
+        if (item.id === selectedItemId && item.quantity === 1) {
+          alert(
+            "You cannot have less than one item. If you wish to remove this item, click remove"
+          );
+          return item;
+        }
+
+        if (item.id === selectedItemId) {
+          return {
+            ...item,
+            quantity: item.quantity - 1,
+            totalPrice: item.basePrice * (item.quantity - 1),
+          };
+        }
+
+        return item;
+      });
       break;
     case "increment":
-      console.log("+1");
+      CART_ARRAY = CART_ARRAY.map((item, index) => {
+        if (item.id === selectedItemId) {
+          return {
+            ...item,
+            totalPrice: item.basePrice * (item.quantity + 1),
+            quantity: item.quantity + 1,
+          };
+        }
+        return item;
+      });
       break;
     case "remove":
-      console.log("remove");
+      const response = confirm("Are you sure you want to remove this item?");
+      const [gadgetToBeRemoved] = CART_ARRAY.filter(
+        (item) => item.id === selectedItemId
+      );
+      if (response) removeFromCart(gadgetToBeRemoved);
       break;
-
     default:
+      alert("invalid action");
       return;
   }
+  handleInvoiceProcess(CART_ARRAY);
 }
 
 function createInvoice(cartArr) {
   return cartArr
     .map((item, index) => {
+      // ${(item.totalPrice ?? item.basePrice).toLocaleString("en-US")}
       return `
     <tr>
       <td>${index + 1}</td>
       <td>${item.name}</td>
-      <td>${item.price}</td>
+      <td>
+        ${item.basePrice.toLocaleString("en-US")}
+
+      </td>
       <td>
           <button class="btn--counter" onclick="handleCounter(${
             item.id
@@ -101,7 +269,8 @@ function renderInvoice({ invoice, totalAmount }) {
 function calculateTotalPrice(cartArr) {
   const startingPrice = 0;
   let totalPrice = cartArr.reduce(
-    (accumulatedPrice, item) => accumulatedPrice + item.price,
+    (accumulatedPrice, item) =>
+      accumulatedPrice + (item.totalPrice ?? item.basePrice),
     startingPrice
   );
   return totalPrice;
@@ -113,17 +282,19 @@ function handleInvoiceProcess(cart) {
   renderInvoice({ invoice, totalAmount });
 }
 
-function updateCartCount(numberOfItems) {
-  CART_COUNTER.innerHTML = numberOfItems;
+function updateCartCount() {
+  CART_ITEMS_COUNTER.innerHTML = CART_ARRAY.length;
   handleInvoiceProcess(CART_ARRAY);
 }
 
 function addToCart(gadget) {
-  CART_ARRAY.push({ ...gadget, quantity: 1 });
+  CART_ARRAY.push(gadget);
+  updateCartCount();
 }
 
 function removeFromCart(gadget) {
   CART_ARRAY = CART_ARRAY.filter((item) => item.id !== gadget.id);
+  updateCartCount();
 }
 
 function changeBtnLabel(btn, action) {
@@ -147,12 +318,12 @@ function handleAddToCartProcess(event, index) {
   if (feedback) {
     removeFromCart(feedback);
     changeBtnLabel(event.target, "add");
-    updateCartCount(CART_ARRAY.length);
+    updateCartCount();
     return;
   }
   changeBtnLabel(event.target, "remove");
-  addToCart(selectedGadget);
-  updateCartCount(CART_ARRAY.length);
+  addToCart({ ...selectedGadget, quantity: 1 });
+  updateCartCount();
 }
 
 let gadgetList = AVAILABLE_GADGETS.map((item, index) => {
@@ -170,18 +341,17 @@ let gadgetList = AVAILABLE_GADGETS.map((item, index) => {
 
 GADGETS_CONTAINER.innerHTML = gadgetList;
 
-// function payWithPaystack() {
-//   let handler = PaystackPop.setup({
-//     key: "pk_test_a3a21e27e5d115f49b289bbf9231c00dedc10e57", // Replace with your public key
-//     email: document.getElementById("email-address").value,
-//     amount: document.getElementById("amount").value * 100,
-//     ref: "" + Math.floor(Math.random() * 1000000000 + 1), // generates a pseudo-unique reference. Please replace with a reference you generated. Or remove the line entirely so our API will generate one for you
-//     // label: "Optional string that replaces customer email"
-//     onClose: function () {
-//       alert("Window closed.");
-//     },
-//     callback: function (response) {},
-//   });
-
-//   handler.openIframe();
-// }
+function payWithPaystack() {
+  let handler = PaystackPop.setup({
+    key: "pk_test_a3a21e27e5d115f49b289bbf9231c00dedc10e57",
+    email: formValidationProcess.formElements.input.mailAddress.value.trim(),
+    amount: calculateTotalPrice(CART_ARRAY) * 100,
+    onClose: function () {
+      alert("Transaction was not completed, window closed.");
+    },
+    callback: function (response) {
+      alert(response);
+    },
+  });
+  handler.openIframe();
+}
